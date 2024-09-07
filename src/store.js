@@ -5,23 +5,23 @@ import { v4 as uuidv4 } from 'uuid';
 const useEventStore = create(
   persist(
     (set) => ({
-      events: [],
+      calendarEvents: [],
 
       addEvent: (eventData) => set((state) => ({
-        events: [...state.events, { id: uuidv4(), ...eventData }]
+        calendarEvents: [...state.calendarEvents, { id: uuidv4(), ...eventData }]
       })),
 
       updateEvent: (id, updatedData) => set((state) => ({
-        events: state.events.map(event => 
+        calendarEvents: state.calendarEvents.map(event => 
           event.id === id ? { ...event, ...updatedData } : event
         )
       })),
 
       deleteEvent: (id) => set((state) => ({
-        events: state.events.filter(event => event.id !== id)
+        calendarEvents: state.calendarEvents.filter(event => event.id !== id)
       })),
 
-      clearEvents: () => set({ events: [] }),
+      clearEvents: () => set({ calendarEvents: [] }),
     }),
     {
       name: 'event-storage',

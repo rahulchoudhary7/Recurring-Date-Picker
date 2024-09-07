@@ -8,7 +8,6 @@ import {
   Clock,
   ChevronRight,
   ChevronLeft,
-  CircleX,
 } from 'lucide-react'
 import { Button } from './ui/button'
 import {
@@ -31,10 +30,10 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import useEventStore from '@/store'
 import {
   Dialog,
   DialogContent,
@@ -42,45 +41,51 @@ import {
   DialogHeader,
   DialogTitle,
 } from './ui/dialog'
+import useEventStore from '@/store'
 
 const localizer = momentLocalizer(moment)
 
-const CustomToolbar = ({ date, onNavigate, onView, view }) => {
+const CustomToolbar = ({
+  date,
+  onNavigate,
+  onView,
+  view,
+}) => {
   const goToBack = () => {
-    onNavigate('PREV');
-  };
+    onNavigate('PREV')
+  }
 
   const goToNext = () => {
-    onNavigate('NEXT');
-  };
+    onNavigate('NEXT')
+  }
 
   const goToCurrent = () => {
-    onNavigate('TODAY');
-  };
+    onNavigate('TODAY')
+  }
 
-  const currentMonth = date.getMonth();
-  const currentYear = date.getFullYear();
+  const currentMonth = date.getMonth()
+  const currentYear = date.getFullYear()
 
-  const handleMonthChange = (value) => {
-    const newDate = new Date(date);
-    newDate.setMonth(parseInt(value));
-    onNavigate('DATE', newDate);
-  };
+  const handleMonthChange = value => {
+    const newDate = new Date(date)
+    newDate.setMonth(parseInt(value))
+    onNavigate('DATE', newDate)
+  }
 
-  const handleYearChange = (value) => {
-    const newDate = new Date(date);
-    newDate.setFullYear(parseInt(value));
-    onNavigate('DATE', newDate);
-  };
+  const handleYearChange = value => {
+    const newDate = new Date(date)
+    newDate.setFullYear(parseInt(value))
+    onNavigate('DATE', newDate)
+  }
 
-  const handleViewChange = (newView) => {
-    onView(newView);
-  };
+  const handleViewChange = newView => {
+    onView(newView)
+  }
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between mb-4 space-y-4 md:space-y-0">
-      <div className="flex">
-        <Button onClick={goToBack} className="mr-2">
+    <div className='flex flex-col md:flex-row items-center justify-between mb-4 space-y-4 md:space-y-0'>
+      <div className='flex'>
+        <Button onClick={goToBack} className='mr-2'>
           <ChevronLeft size={20} />
         </Button>
         <Button onClick={goToNext}>
@@ -88,34 +93,29 @@ const CustomToolbar = ({ date, onNavigate, onView, view }) => {
         </Button>
       </div>
 
-      <Select
-          onValueChange={handleViewChange}
-          value={view}
-        >
-          <SelectTrigger className="w-full md:w-32 mt-2 md:mt-0 md:ml-2">
-            <SelectValue placeholder="View" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="month">Month</SelectItem>
-            <SelectItem value="week">Week</SelectItem>
-          </SelectContent>
-        </Select>
+      <Select onValueChange={handleViewChange} value={view}>
+        <SelectTrigger className='w-full md:w-32 mt-2 md:mt-0 md:ml-2'>
+          <SelectValue placeholder='View' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value='month'>Month</SelectItem>
+          <SelectItem value='week'>Week</SelectItem>
+        </SelectContent>
+      </Select>
 
-      <div className="text-lg font-bold">
+      <div className='text-lg font-bold'>
         {format(date, 'MMMM yyyy')}
       </div>
 
-
-
-      <div className="flex flex-col md:flex-row items-center">
+      <div className='flex flex-col md:flex-row items-center'>
         <Select
           onValueChange={handleMonthChange}
           value={currentMonth.toString()}
         >
-          <SelectTrigger className="w-full md:w-32">
-            <SelectValue placeholder="Month" />
+          <SelectTrigger className='w-full md:w-32'>
+            <SelectValue placeholder='Month' />
           </SelectTrigger>
-          <SelectContent className="max-h-56 overflow-y-auto">
+          <SelectContent className='max-h-56 overflow-y-auto'>
             <SelectGroup>
               {moment.months().map((month, index) => (
                 <SelectItem
@@ -133,13 +133,13 @@ const CustomToolbar = ({ date, onNavigate, onView, view }) => {
           onValueChange={handleYearChange}
           value={currentYear.toString()}
         >
-          <SelectTrigger className="w-full md:w-32 mt-2 md:mt-0 md:ml-2">
-            <SelectValue placeholder="Year" />
+          <SelectTrigger className='w-full md:w-32 mt-2 md:mt-0 md:ml-2'>
+            <SelectValue placeholder='Year' />
           </SelectTrigger>
-          <SelectContent className="max-h-56 overflow-y-auto">
+          <SelectContent className='max-h-56 overflow-y-auto'>
             <SelectGroup>
               {Array.from({ length: 110 }, (_, i) => {
-                const year = 1990 + i;
+                const year = 1990 + i
                 return (
                   <SelectItem
                     key={year}
@@ -147,34 +147,30 @@ const CustomToolbar = ({ date, onNavigate, onView, view }) => {
                   >
                     {year}
                   </SelectItem>
-                );
+                )
               })}
             </SelectGroup>
           </SelectContent>
         </Select>
 
-
         <Button
           onClick={goToCurrent}
-          className="mt-2 md:mt-0 md:ml-2"
+          className='mt-2 md:mt-0 md:ml-2'
         >
           Today
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const RecurringDatePicker = () => {
-  const { events, addEvent, clearEvents, deleteEvent } =
-    useEventStore()
-  const [currentDate, setCurrentDate] = useState(new Date())
-  const [currentView, setCurrentView] = useState(
-    Views.MONTH,
-  )
-  const [eventTitle, setEventTitle] = useState('')
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [selectedEvent, setSelectedEvent] = useState(null)
+  const {
+    calendarEvents,
+    addEvent,
+    clearEvents,
+    deleteEvent,
+  } = useEventStore()
 
   const [recurrenceType, setRecurrenceType] =
     useState('daily')
@@ -185,11 +181,38 @@ const RecurringDatePicker = () => {
   const [selectedWeekdays, setSelectedWeekdays] = useState(
     [],
   )
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedMonthDay, setSelectedMonthDay] =
     useState(1)
+  const [currentDate, setCurrentDate] = useState(new Date())
+  const [currentView, setCurrentView] = useState(
+    Views.MONTH,
+  )
   const [selectedWeekday, setSelectedWeekday] =
     useState(null)
   const [nthWeek, setNthWeek] = useState(1)
+  const [selectedEvent, setSelectedEvent] = useState()
+  const [eventTitle, setEventTitle] = useState()
+
+  const handleRecurrenceIntervalChange = interval => {
+    setRecurrenceInterval(parseInt(interval))
+  }
+
+  const handleStartDateChange = date => {
+    setStartDate(date)
+  }
+
+  const handleEndDateChange = date => {
+    setEndDate(date)
+  }
+
+  const handleWeekdaySelect = day => {
+    setSelectedWeekdays(prevDays =>
+      prevDays.includes(day)
+        ? prevDays.filter(d => d !== day)
+        : [...prevDays, day],
+    )
+  }
 
   const handleEventSelect = event => {
     const eventWithDateObjects = {
@@ -200,8 +223,6 @@ const RecurringDatePicker = () => {
     setSelectedEvent(eventWithDateObjects)
     setIsDialogOpen(true)
   }
-
-
 
   const generateRecurringDates = () => {
     if (endDate && startDate > endDate) {
@@ -231,6 +252,7 @@ const RecurringDatePicker = () => {
             currentDate,
             recurrenceInterval,
           )
+          console.log(currentDate.toLocaleDateString())
           break
 
         case 'weekly':
@@ -316,15 +338,7 @@ const RecurringDatePicker = () => {
             recurrenceType.charAt(0).toUpperCase() +
             recurrenceType.slice(1)
           } Event`,
-      dates: dates,
-      recurrenceType,
-      recurrenceInterval,
-      startDate,
-      endDate: endDate ? endDate : new Date('2030-12-31'),
-      selectedWeekdays,
-      selectedMonthDay,
-      selectedWeekday,
-      nthWeek,
+      selectedDates: dates,
     })
     setEventTitle('')
     alert('Event added successfully')
@@ -353,8 +367,8 @@ const RecurringDatePicker = () => {
     return null
   }
 
-  const calendarEvents = events.flatMap(event =>
-    event.dates.map(date => ({
+  const events = calendarEvents.flatMap(event =>
+    event.selectedDates.map(date => ({
       id: `${event.id}-${format(
         new Date(date),
         'yyyy-MM-dd',
@@ -410,100 +424,68 @@ const RecurringDatePicker = () => {
   }
 
   return (
-    <div className='p-6 rounded-lg shadow-lg bg-white text-gray-800 '>
+    <div className='p-6 rounded-lg shadow-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white'>
       <h2 className='text-2xl font-bold mb-6 flex items-center'>
         <Repeat className='mr-2' /> Recurring Date Picker
       </h2>
 
-      <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-        <div className='col-span-1'>
-          <RecurrenceTypeSelect
-            recurrenceType={recurrenceType}
-            setRecurrenceType={setRecurrenceType}
-          />
-        </div>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+        <RecurrenceTypeSelect
+          recurrenceType={recurrenceType}
+          setRecurrenceType={setRecurrenceType}
+        />
 
-        <div className='col-span-1'>
-          <RecurrenceIntervalInput
-            recurrenceInterval={recurrenceInterval}
-            handleRecurrenceIntervalChange={
-              setRecurrenceInterval
-            }
-          />
-        </div>
+        <RecurrenceIntervalInput
+          recurrenceInterval={recurrenceInterval}
+          handleRecurrenceIntervalChange={
+            handleRecurrenceIntervalChange
+          }
+        />
 
-        <div className='col-span-1'>
-          <label className='font-medium mb-2 flex items-center'>
-            <Calendar className='mr-2' /> Start Date
-          </label>
-          <input
-            type='date'
-            value={format(startDate, 'yyyy-MM-dd')}
-            onChange={e =>
-              setStartDate(new Date(e.target.value))
-            }
-            className='border border-gray-300 rounded-md px-4 py-3 w-full bg-white text-gray-800 dark:bg-gray-700 dark:text-white'
-          />
-        </div>
+        <DateInput
+          label='Start Date'
+          value={startDate}
+          onChange={handleStartDateChange}
+        />
 
-        <div className='col-span-1'>
-          <label className='font-medium mb-2 flex items-center'>
-            <Calendar className='mr-2' /> End Date
-          </label>
-          <input
-            type='date'
-            value={
-              endDate ? format(endDate, 'yyyy-MM-dd') : ''
-            }
-            onChange={e =>
-              setEndDate(new Date(e.target.value))
-            }
-            className='border border-gray-300 rounded-md px-4 py-3 w-full bg-white text-gray-800 dark:bg-gray-700 dark:text-white'
-          />
-        </div>
+        <DateInput
+          label='End Date (optional)'
+          value={endDate}
+          onChange={handleEndDateChange}
+        />
 
         {recurrenceType === 'weekly' && (
-          <div className='col-span-1'>
-            <WeekdaySelector
-              selectedWeekdays={selectedWeekdays}
-              handleWeekdaySelect={day =>
-                setSelectedWeekdays(prev =>
-                  prev.includes(day)
-                    ? prev.filter(d => d !== day)
-                    : [...prev, day],
-                )
-              }
-            />
-          </div>
+          <WeekdaySelector
+            selectedWeekdays={selectedWeekdays}
+            handleWeekdaySelect={handleWeekdaySelect}
+          />
         )}
 
         {recurrenceType === 'monthly' && (
-          <div className='col-span-1'>
-            <MonthlySelector
-              selectedWeekday={selectedWeekday}
-              setSelectedWeekday={setSelectedWeekday}
-              nthWeek={nthWeek}
-              setNthWeek={setNthWeek}
-            />
-          </div>
-        )}
-
-        <div className='col-span-1 md:col-span-2'>
-          <label
-            htmlFor='event-title'
-            className='font-medium mb-2 flex items-center'
-          >
-            <ChevronRight className='mr-2' /> Event Title
-          </label>
-          <input
-            id='event-title'
-            type='text'
-            value={eventTitle}
-            onChange={e => setEventTitle(e.target.value)}
-            placeholder='Enter event title'
-            className='w-full border border-gray-300 rounded-md px-4 py-3 bg-white text-gray-800 dark:bg-gray-700 dark:text-white'
+          <MonthlySelector
+            selectedWeekday={selectedWeekday}
+            setSelectedWeekday={setSelectedWeekday}
+            nthWeek={nthWeek}
+            setNthWeek={setNthWeek}
           />
-        </div>
+        )}
+      </div>
+
+      <div className='col-span-1 md:col-span-2'>
+        <label
+          htmlFor='event-title'
+          className='font-medium mb-2 flex items-center'
+        >
+          <ChevronRight className='mr-2' /> Event Title
+        </label>
+        <input
+          id='event-title'
+          type='text'
+          value={eventTitle}
+          onChange={e => setEventTitle(e.target.value)}
+          placeholder='Enter event title'
+          className='w-full border border-gray-300 rounded-md px-4 py-3 bg-white text-gray-800 dark:bg-gray-700 dark:text-white'
+        />
       </div>
 
       <div className='flex justify-center mt-6 space-x-4'>
@@ -525,7 +507,7 @@ const RecurringDatePicker = () => {
       <div className='mt-8 border-t p-2 md:p-4 rounded-md shadow-md'>
         <CalendarComponent
           localizer={localizer}
-          events={calendarEvents}
+          events={events}
           startAccessor='start'
           endAccessor='end'
           style={{ height: 500 }}
@@ -540,32 +522,32 @@ const RecurringDatePicker = () => {
           eventPropGetter={eventStyleGetter}
           onSelectEvent={handleEventSelect}
         />
-      </div>
 
-      <Dialog
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {selectedEvent?.title}
-            </DialogTitle>
-            <DialogDescription>
-              Event details and actions
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className='mt-4 flex justify-center'>
-            <Button
-              onClick={()=>setIsDialogOpen(false)}
-              className='bg-indigo-700 hover:bg-indigo-900 text-white text-left'
-            >
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+        <Dialog
+          open={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {selectedEvent?.title}
+              </DialogTitle>
+              <DialogDescription>
+                Event details and actions
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className='mt-4 flex justify-center'>
+              <Button
+                onClick={() => setIsDialogOpen(false)}
+                className='bg-indigo-700 hover:bg-indigo-900 text-white text-left'
+              >
+                Close
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   )
 }
@@ -619,6 +601,20 @@ const RecurrenceIntervalInput = ({
       onChange={e =>
         handleRecurrenceIntervalChange(e.target.value)
       }
+      className='border border-gray-300 rounded-md px-4 py-3 w-full bg-white text-gray-800 dark:bg-gray-700 dark:text-white'
+    />
+  </div>
+)
+
+const DateInput = ({ label, value, onChange }) => (
+  <div>
+    <label className='font-medium mb-2 flex items-center'>
+      <Calendar className='mr-2' /> {label}
+    </label>
+    <input
+      type='date'
+      value={value?.toISOString().substr(0, 10) || ''}
+      onChange={e => onChange(new Date(e.target.value))}
       className='border border-gray-300 rounded-md px-4 py-3 w-full bg-white text-gray-800 dark:bg-gray-700 dark:text-white'
     />
   </div>
@@ -723,4 +719,3 @@ const MonthlySelector = ({
 )
 
 export default RecurringDatePicker
-
